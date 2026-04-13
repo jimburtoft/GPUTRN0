@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TPUGPU Router Demo</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,500;1,600&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/static/styles.css?v=20260407b" />
+  </head>
+  <body>
+    <main class="page">
+      <section class="hero">
+        <div class="hero-top">
+          <img class="bagel-logo" src="/static/assets/logo/bagel-logo.svg" alt="Bagel Labs" />
+        </div>
+      </section>
+
+      <section class="map-panel">
+        <svg class="map-scene" viewBox="0 0 1000 520" aria-label="Distributed TPUGPU machine layout">
+          <image
+            class="world-map-image"
+            href="/static/assets/graphics/world-map.png"
+            x="0"
+            y="0"
+            width="1000"
+            height="520"
+            preserveAspectRatio="none"
+          />
+
+          <line id="lineUsEu" class="connection-line" x1="300" y1="150" x2="500" y2="110"></line>
+          <line id="lineEuAsia" class="connection-line" x1="500" y1="110" x2="785" y2="260"></line>
+
+          <g id="nodeTpu" class="map-node">
+            <circle id="pinTpuHalo" class="pin-halo" cx="300" cy="150" r="16"></circle>
+            <circle id="pinTpu" class="pin-dot" cx="300" cy="150" r="8"></circle>
+            <text class="node-title" x="286" y="182" text-anchor="end">TPU expert</text>
+            <text class="node-region" x="286" y="200" text-anchor="end">us-east5-a</text>
+            <foreignObject
+              id="cardTpu"
+              class="machine-card-fo"
+              x="96"
+              y="212"
+              width="176"
+              height="70"
+              data-anchor="end"
+              data-anchor-x="286"
+              data-gap="0"
+            >
+              <div xmlns="http://www.w3.org/1999/xhtml" class="machine-card">
+                <div>hardware: TPU - v6e-1</div>
+                <div>stack: JAX / XLA</div>
+                <div>trained on: digits 0-4</div>
+              </div>
+            </foreignObject>
+          </g>
+
+          <g id="nodeRouter" class="map-node">
+            <circle id="pinRouterHalo" class="pin-halo" cx="500" cy="110" r="16"></circle>
+            <circle id="pinRouter" class="pin-dot" cx="500" cy="110" r="8"></circle>
+            <text class="node-title" x="500" y="142" text-anchor="middle">CPU router</text>
+            <text class="node-region" x="500" y="160" text-anchor="middle">europe-west4-a</text>
+            <foreignObject
+              id="cardRouter"
+              class="machine-card-fo"
+              x="390"
+              y="172"
+              width="220"
+              height="76"
+              data-anchor="middle"
+              data-anchor-x="500"
+              data-gap="0"
+            >
+              <div xmlns="http://www.w3.org/1999/xhtml" class="machine-card">
+                <div>hardware: CPU - e2-standard-4</div>
+                <div>stack: Python / FastAPI</div>
+                <div>trained on: router over digits 0-9</div>
+              </div>
+            </foreignObject>
+            <foreignObject x="420" y="304" width="160" height="160">
+              <div xmlns="http://www.w3.org/1999/xhtml" class="router-live-image">
+                <canvas id="stateCanvas" width="320" height="320"></canvas>
+              </div>
+            </foreignObject>
+          </g>
+
+          <g id="nodeGpu" class="map-node">
+            <circle id="pinGpuHalo" class="pin-halo" cx="785" cy="260" r="16"></circle>
+            <circle id="pinGpu" class="pin-dot" cx="785" cy="260" r="8"></circle>
+            <text class="node-title" x="777" y="292">GPU expert</text>
+            <text class="node-region" x="777" y="310">asia-southeast1-a</text>
+            <foreignObject
+              id="cardGpu"
+              class="machine-card-fo"
+              x="777"
+              y="322"
+              width="196"
+              height="72"
+              data-anchor="start"
+              data-anchor-x="777"
+              data-gap="0"
+            >
+              <div xmlns="http://www.w3.org/1999/xhtml" class="machine-card">
+                <div>hardware: GPU-A100 40GB</div>
+                <div>stack: PyTorch / CUDA</div>
+                <div>trained on: digits 5-9</div>
+              </div>
+            </foreignObject>
+          </g>
+        </svg>
+
+        <section class="controls">
+          <label>
+            Digit
+            <input id="labelInput" type="number" min="0" max="9" value="2" />
+          </label>
+          <label>
+            Steps
+            <input id="stepsInput" type="number" min="10" max="200" value="30" />
+          </label>
+          <button id="runButton">Generate</button>
+        </section>
+      </section>
+    </main>
+
+    <script src="/static/app.js?v=20260407b"></script>
+  </body>
+</html>

@@ -1,0 +1,224 @@
+:root {
+  --brand: #e35b2f;
+  --brand-deep: #b84a08;
+  --paper: #f3efe9;
+  --ink: #131313;
+  --muted: #8a543f;
+  --screen: #161616;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: "IBM Plex Sans", "Avenir Next", sans-serif;
+  color: var(--ink);
+  background: var(--paper);
+  overflow: hidden;
+}
+
+.page {
+  max-width: 1380px;
+  margin: 0 auto;
+  padding: 18px 24px 20px;
+  height: 100vh;
+  display: grid;
+  grid-template-rows: auto 1fr;
+  gap: 8px;
+}
+
+.hero-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+}
+
+.bagel-logo {
+  width: min(170px, 24vw);
+  max-width: 170px;
+  height: auto;
+  display: block;
+}
+
+.map-panel {
+  display: grid;
+  grid-template-rows: 1fr auto;
+  gap: 10px;
+  min-height: 0;
+}
+
+.map-scene {
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  max-height: 72vh;
+  display: block;
+}
+
+.world-map-image {
+  opacity: 0.18;
+}
+
+.connection-line {
+  stroke: rgba(227, 91, 47, 0.72);
+  stroke-width: 3;
+  stroke-linecap: round;
+  filter: drop-shadow(0 0 6px rgba(227, 91, 47, 0.22));
+}
+
+.connection-line.active {
+  stroke: #00ff66;
+  stroke-width: 8;
+  filter:
+    drop-shadow(0 0 12px rgba(0, 255, 102, 0.82))
+    drop-shadow(0 0 30px rgba(0, 255, 102, 0.98));
+  animation: pulseStroke 0.24s linear;
+}
+
+.pin-halo {
+  fill: rgba(227, 91, 47, 0.12);
+}
+
+.pin-dot {
+  fill: var(--brand);
+  stroke: #fff6ef;
+  stroke-width: 3;
+}
+
+.map-node.active .pin-halo {
+  fill: rgba(0, 255, 102, 0.22);
+  animation: haloPulse 0.18s linear;
+}
+
+.map-node.active .pin-dot {
+  filter:
+    drop-shadow(0 0 12px rgba(0, 255, 102, 0.88))
+    drop-shadow(0 0 28px rgba(0, 255, 102, 0.92));
+  animation: pinGlowPulse 0.18s linear;
+}
+
+.node-title {
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-size: 18px;
+  font-style: italic;
+  font-weight: 600;
+  fill: var(--ink);
+}
+
+.node-region {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 18px;
+  fill: var(--muted);
+}
+
+.machine-card {
+  display: inline-block;
+  width: max-content;
+  height: auto;
+  min-width: 0;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 8px;
+  padding: 8px 10px;
+  color: #5a463d;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 8px;
+  line-height: 1.4;
+  white-space: nowrap;
+}
+
+.router-live-image {
+  width: 160px;
+  height: 160px;
+}
+
+#stateCanvas {
+  width: 160px;
+  height: 160px;
+  display: block;
+  image-rendering: pixelated;
+  border-radius: 12px;
+  background: var(--screen);
+}
+
+.controls {
+  margin: 2px 0 0;
+  display: flex;
+  gap: 14px;
+  align-items: end;
+  justify-content: center;
+}
+
+.controls label {
+  display: grid;
+  gap: 6px;
+  color: var(--muted);
+  font-size: 0.9rem;
+  font-family: "IBM Plex Mono", monospace;
+  text-transform: lowercase;
+}
+
+.controls input,
+.controls button {
+  border: 1px solid rgba(227, 91, 47, 0.28);
+  background: transparent;
+  color: var(--ink);
+  border-radius: 14px;
+  padding: 12px 16px;
+  font-size: 1rem;
+}
+
+.controls button {
+  color: var(--brand);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+@keyframes haloPulse {
+  0% { opacity: 0.55; }
+  50% { opacity: 1; }
+  100% { opacity: 0.7; }
+}
+
+@keyframes pinGlowPulse {
+  0% {
+    opacity: 0.95;
+    filter:
+      drop-shadow(0 0 6px rgba(0, 255, 102, 0.45))
+      drop-shadow(0 0 12px rgba(0, 255, 102, 0.52));
+  }
+  50% {
+    opacity: 1;
+    filter:
+      drop-shadow(0 0 14px rgba(0, 255, 102, 0.92))
+      drop-shadow(0 0 32px rgba(0, 255, 102, 0.98));
+  }
+  100% {
+    opacity: 1;
+    filter:
+      drop-shadow(0 0 10px rgba(0, 255, 102, 0.82))
+      drop-shadow(0 0 24px rgba(0, 255, 102, 0.9));
+  }
+}
+
+@keyframes pulseStroke {
+  0% { stroke-width: 3; opacity: 0.78; }
+  50% { stroke-width: 6; opacity: 1; }
+  100% { stroke-width: 4; opacity: 0.95; }
+}
+
+@media (max-width: 980px) {
+  body {
+    overflow: auto;
+  }
+
+  .page {
+    height: auto;
+  }
+
+  .map-scene {
+    max-height: none;
+  }
+}
