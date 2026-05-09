@@ -17,6 +17,17 @@ def sinusoidal_embedding(timesteps: jnp.ndarray, dim: int) -> jnp.ndarray:
     return emb
 
 
+def downsample_2x(x: jnp.ndarray) -> jnp.ndarray:
+    """Downsample spatial dims by 2x using reshape + mean.
+
+    Avoids nn.avg_pool which uses reduce-window with base dilation
+    in backward pass (unsupported on Neuron).
+    """
+    b, h, w, c = x.shape
+    x = x.reshape(b, h // 2, 2, w // 2, 2, c)
+    return x.mean(axis=(2, 4))
+
+
 class ResBlock(nn.Module):
     channels: int
 
@@ -57,10 +68,10 @@ class SmallConditionalUNet(nn.Module):
 
         h0 = nn.Conv(self.hidden_channels, kernel_size=(3, 3), padding="SAME")(x)
         h1 = ResBlock(self.hidden_channels)(h0, cond)
-        d1 = nn.avg_pool(h1, window_shape=(2, 2), strides=(2, 2))
+        d1 = downsample_2x(h1)
 
         h2 = ResBlock(self.hidden_channels * 2)(d1, cond)
-        d2 = nn.avg_pool(h2, window_shape=(2, 2), strides=(2, 2))
+        d2 = downsample_2x(h2)
 
         mid = ResBlock(self.hidden_channels * 2)(d2, cond)
         mid = ResBlock(self.hidden_channels * 2)(mid, cond)
@@ -80,4 +91,6 @@ class SmallConditionalUNet(nn.Module):
 
 
 def jax_image_resize(x: jnp.ndarray, shape: tuple[int, int]) -> jnp.ndarray:
-    return jax.image.resize(x, (x.shape[0], shape[0], shape[1], x.shape[-1]), method="nearest")
+    return jax.image.resize(
+        x, (x.shape[0], shape[0], shape[1], x.shape[-1]), method="nearest"
+    )
